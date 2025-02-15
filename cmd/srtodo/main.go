@@ -8,6 +8,7 @@ import (
 	"github.com/fevse/srtodo/internal/server"
 	"github.com/fevse/srtodo/internal/storage"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/logger"
 )
 
 func main() {
@@ -29,6 +30,8 @@ func main() {
 	defer storage.Storage.Close(context.Background())
 
 	app := fiber.New()
+
+	app.Use(logger.New())
 
 	server.Routes(app)
 
