@@ -29,8 +29,4 @@ SERVPORT=
 
 ### Запуск через Makefile
 
-make migrate - накатывает миграции
-
-make build - собирает исполняемый файл
-
-make run -  собирает исполняемый файл и запускает его
+make run -  запускает Docker контейнеры с приложением и базой данных (PostgreSQL) с помощью docker-compose
