@@ -8,7 +8,6 @@
 package server
 
 import (
-	"context"
 	"time"
 
 	"github.com/fevse/srtodo/internal/storage"
@@ -25,7 +24,7 @@ func CreateTask(c *fiber.Ctx) error {
 
 	query := "INSERT INTO tasks (id, title, description, status) VALUES($1, $2, $3, $4)"
 
-	_, err = storage.Storage.Exec(context.Background(), query, task.ID, task.Title, task.Description, task.Status)
+	_, err = storage.Storage.Exec(query, task.ID, task.Title, task.Description, task.Status)
 
 	if err != nil {
 		return c.Status(500).SendString("Create task error")
@@ -37,7 +36,7 @@ func CreateTask(c *fiber.Ctx) error {
 // ShowTasks предназначена для получения списка задач
 func ShowTasks(c *fiber.Ctx) error {
 	query := "SELECT * FROM tasks"
-	rows, err := storage.Storage.Query(context.Background(), query)
+	rows, err := storage.Storage.Query(query)
 	if err != nil {
 		return c.Status(500).SendString("DB executing query error")
 	}
@@ -68,7 +67,7 @@ func UpdateTask(c *fiber.Ctx) error {
 
 	query := "UPDATE tasks SET title = $1, description = $2, status = $3, updated_at = $4 WHERE id = $5"
 
-	_, err = storage.Storage.Exec(context.Background(), query, task.Title, task.Description, task.Status, time.Now(), id)
+	_, err = storage.Storage.Exec(query, task.Title, task.Description, task.Status, time.Now(), id)
 	if err != nil {
 		return c.Status(500).SendString("Update task error")
 	}
@@ -81,7 +80,7 @@ func DeleteTask(c *fiber.Ctx) error {
 	id := c.Params("id")
 	query := "DELETE FROM tasks WHERE id = $1"
 
-	_, err := storage.Storage.Exec(context.Background(), query, id)
+	_, err := storage.Storage.Exec(query, id)
 	if err != nil {
 		return c.Status(500).SendString("Delete task error")
 	}

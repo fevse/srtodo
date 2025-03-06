@@ -1,7 +1,7 @@
 package main
 
 import (
-	"context"
+	"fmt"
 	"log"
 
 	"github.com/fevse/srtodo/internal/conf"
@@ -27,9 +27,21 @@ func main() {
 	if err != nil {
 		log.Fatalf("DB connection error: %v", err)
 	}
-	defer storage.Storage.Close(context.Background())
+	defer storage.Storage.Close()
+
+	fmt.Println("Storage: done")
+
+	err = storage.Migrate(".")
+
+	if err != nil {
+		log.Fatalf("DB migration error: %v", err)
+	}
+
+	fmt.Println("Migrate: done")
 
 	app := fiber.New()
+
+	fmt.Println("Server: done")
 
 	app.Use(logger.New())
 
