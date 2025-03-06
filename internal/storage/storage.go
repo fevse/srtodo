@@ -5,19 +5,29 @@
 package storage
 
 import (
-	"context"
-
-	"github.com/jackc/pgx/v5"
+	_ "github.com/jackc/pgx/stdlib" // driver
+	"github.com/jmoiron/sqlx"
+	"github.com/pressly/goose"
 )
 
-var Storage *pgx.Conn
+var Storage *sqlx.DB
 
 // NewStorage создает новое подключение к базе данных
 func NewStorage(conf string) error {
-	conn, err := pgx.Connect(context.Background(), conf)
+	conn, err := sqlx.Connect("pgx", conf)
 	if err != nil {
 		return err
 	}
 	Storage = conn
+	return nil
+}
+
+func Migrate(dir string) error {
+	if err := goose.SetDialect("postgres"); err != nil {
+		return err
+	}
+	if err := goose.Up(Storage.DB, dir); err != nil {
+		return err
+	}
 	return nil
 }
